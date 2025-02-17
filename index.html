@@ -92,7 +92,7 @@
         <h2>Les commentaires</h2>
 
         <template id="alert">
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <div class="alert alert-dismissible fade show" role="alert">
             <div class="js-text"></div>
             <button
               type="button"
@@ -118,6 +118,7 @@
                 type="text"
                 class="form-control"
                 placeholder="Votre pseudo"
+                required
               />
             </div>
             <div class="col-sm">
@@ -126,6 +127,7 @@
                 type="text"
                 class="form-control"
                 placeholder="Votre email"
+                required
               />
             </div>
           </div>
@@ -133,6 +135,7 @@
             name="body"
             class="form-control mb-2"
             style="min-height: 150px"
+            required
           ></textarea>
           <button class="btn btn-primary">Envoyer</button>
         </form>

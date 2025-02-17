@@ -78,6 +78,71 @@ class InfinitePagination {
   }
 }
 
+class FetchForm {
+  /**@type {string} */
+  #endpoint;
+  /**@type {HTMLTemplateElement} */
+  #template;
+  /**@type {HTMLElement} */
+  #target;
+  /**@type {HTMLElement} */
+  #elements;
+  /**@type {IntersectionObserver} */
+
+  /**
+   *
+   * @param {HTMLFormElement} form
+   */
+  constructor(form) {
+    this.#endpoint = form.dataset.endpoint;
+    this.#template = document.querySelector(form.dataset.template);
+    this.#target = document.querySelector(form.dataset.target);
+    this.#elements = JSON.parse(form.dataset.elements);
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      this.#submitForm(e.currentTarget);
+    });
+  }
+
+  /**
+   *
+   * @param {HTMLFormElement} form
+   */
+  async #submitForm(form) {
+    const button = form.querySelector("button");
+    button.setAttribute("disabled", "");
+    try {
+      const data = new FormData(form);
+      const comment = await fetchJSON(this.#endpoint, {
+        method: "POST",
+        json: Object.fromEntries(data),
+      });
+      const commentElement = this.#template.content.cloneNode(true);
+      for (const [key, selector] of Object.entries(this.#elements)) {
+        commentElement.querySelector(selector).innerText = comment[key];
+      }
+      this.#target.prepend(commentElement);
+      form.reset();
+      button.removeAttribute("disabled");
+      const alertSucces = alertElement(
+        "Merci pour votre commentaire",
+        "success"
+      );
+      form.insertAdjacentElement("beforebegin", alertSucces);
+    } catch (e) {
+      const errorElement = alertElement("Erreur serveur");
+      form.insertAdjacentElement("beforebegin", errorElement);
+      errorElement.addEventListener("close", () => {
+        button.removeAttribute("disabled");
+      });
+    }
+  }
+}
+
 document
   .querySelectorAll(".js-infinite-pagination")
   .forEach((el) => new InfinitePagination(el));
+
+document
+  .querySelectorAll(".js-form-fetch")
+  .forEach((form) => new FetchForm(form));
