@@ -14,6 +14,8 @@ class InfinitePagination {
   #observer;
   /**@type {boolean} */
   #loading = false;
+  /**@type {number} */
+  #page = 1;
 
   /**
    * 
