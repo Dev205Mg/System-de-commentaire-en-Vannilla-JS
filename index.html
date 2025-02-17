@@ -98,7 +98,7 @@
 
             <template id="comment">
                 <article class="mb-4">
-                    <div class="mb-1"><strong class="js-username"></strong></div>
+                    <div class="mb-1"><strong class="js-username"></strong> #<span class="js-id"></span></div>
                     <p class="js-content"></p>
                 </article>
             </template>
@@ -107,7 +107,7 @@
                 data-endpoint="https://jsonplaceholder.typicode.com/comments?_limit=10"
                 data-template="#comment"
                 data-target=".comments"
-                data-elements='{"name": ".js-username", "body": ".js-content"}'
+                data-elements='{"id": ".js-id", "name": ".js-username", "body": ".js-content"}'
                 class="text-center js-infinite-pagination">
                 <div class="spinner-border" role="status"></div>
             </div>

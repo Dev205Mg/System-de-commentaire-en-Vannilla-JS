@@ -1,15 +1,19 @@
+import { fetchJSON } from "./functions/api.js";
+
 class InfinitePagination {
 
   /**@type {string} */
   #endpoint;
-  /**@type {string} */
+  /**@type {HTMLTemplateElement} */
   #template;
-  /**@type {string} */
+  /**@type {HTMLElement} */
   #target;
-  /**@type {string} */
+  /**@type {object} */
   #elements;
   /**@type {IntersectionObserver} */
   #observer;
+  /**@type {boolean} */
+  #loading = false;
 
   /**
    * 
@@ -17,9 +21,9 @@ class InfinitePagination {
    */
   constructor (element){
     this.#endpoint = element.dataset.endpoint;
-    this.#template = element.dataset.template;
-    this.#target = element.dataset.target;
-    this.#elements = element.dataset.elements;
+    this.#template = document.querySelector(element.dataset.template);
+    this.#target = document.querySelector(element.dataset.target);
+    this.#elements = JSON.parse(element.dataset.elements);
     this.#observer = new IntersectionObserver((entries) => {
       for(const entrie of entries){
         if(entrie.isIntersecting){
@@ -27,11 +31,24 @@ class InfinitePagination {
         }
       }
     })
+    this.#observer.observe(element);
   }
 
 
-  #loadMore(){
-    const commnets = fetchJ
+  async #loadMore(){
+    if(this.#loading){
+      return;
+    }
+    this.#loading = true;
+    const commnets = await fetchJSON(this.#endpoint);
+    for(const comment of commnets){
+      const commentElement = this.#template.content.cloneNode(true);
+      for(const [key, selector] of Object.entries(this.#elements)){
+        commentElement.querySelector(selector).innerText = comment[key];
+      }
+      this.#target.append(commentElement);
+    }
+    this.#loading = false;
   }
 
 
