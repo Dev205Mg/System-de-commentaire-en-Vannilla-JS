@@ -31,7 +31,7 @@ class InfinitePagination {
 
 
   #loadMore(){
-
+    const commnets = fetchJ
   }
 
 
